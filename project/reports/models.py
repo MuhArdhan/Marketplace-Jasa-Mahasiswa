@@ -1,6 +1,6 @@
 from django.db import models
 
-from project.users.models import Customer, Vendor
+from users.models import Customer, Vendor
 
 class Aduan(models.Model):
     id_aduan = models.AutoField(primary_key=True)

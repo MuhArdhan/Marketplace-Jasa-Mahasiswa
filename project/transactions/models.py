@@ -1,6 +1,6 @@
 from django.db import models
 
-from project.users.models import Customer
+from users.models import Customer
 
 class Payment(models.Model):
     id_payment = models.AutoField(primary_key=True)

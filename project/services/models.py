@@ -1,6 +1,6 @@
 from django.db import models
 
-from project.users.models import Customer, Vendor
+from users.models import Customer, Vendor
 
 class Jasa(models.Model):
     id_jasa = models.AutoField(primary_key=True)

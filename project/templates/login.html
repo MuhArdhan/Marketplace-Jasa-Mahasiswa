@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block extra_head %}
+<style>
+    .login-section {
+        padding-top: 180px;
+        padding-bottom: 150px;
+    }
+
+    .login-box {
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+    }
+
+    .login-box h2 {
+        margin-bottom: 30px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .login-btn {
+        width: 100%;
+        background-color: #30318b;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 18px;
+        border: none;
+        transition: 0.3s;
+    }
+
+    .login-btn:hover {
+        background-color: #242566;
+    }
+
+    .login-link, .login-link2 {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .login-link a { color: #051922; font-weight: bold; }
+    .login-link2 a { color: #ff0000; font-weight: bold; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="login-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-8">
+                <div class="login-box">
+
+                    <h2>Login</h2>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control"
+                                   placeholder="Masukkan email Anda" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control"
+                                   placeholder="Masukkan password" required>
+                        </div>
+
+                        <button type="submit" class="login-btn">Login</button>
+
+                        <div class="login-link">
+                            <p>Belum punya akun?
+                                <a href="{% url 'register' %}">Daftar di sini</a>
+                            </p>
+                        </div>
+
+                        <div class="login-link2">
+                            <p>Langsung masuk ke
+                                <a href="{% url 'dashboard_seller' %}">dashboard seller</a>
+                            </p>
+                        </div>
+
+                        <div class="login-link2">
+                            <p>Langsung masuk ke
+                                <a href="{% url 'dashboard_admin' %}">dashboard admin</a>
+                            </p>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

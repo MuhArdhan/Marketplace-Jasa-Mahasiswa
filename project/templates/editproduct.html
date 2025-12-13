@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Product{% endblock %}
+
+{% block content %}
+<style>
+  .form-section {
+    padding-top: 170px;
+    padding-bottom: 150px;
+  }
+</style>
+
+<div class="form-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <div class="card p-4 shadow">
+          <h3 class="mb-4">Update Product Information</h3>
+
+          <form action="#" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label class="form-label">Product Name</label>
+              <input type="text" class="form-control" name="name" value="Strawberry">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" name="description" rows="4">Fresh and sweet strawberries.</textarea>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Price ($)</label>
+                <input type="number" class="form-control" name="price" value="85">
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Stock</label>
+                <input type="number" class="form-control" name="stock" value="50">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Category</label>
+              <select class="form-control" name="category">
+                <option selected>Fruits</option>
+                <option>Vegetables</option>
+                <option>Beverage</option>
+                <option>Umkm Product</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Current Image</label><br>
+              <img src="{% static 'assets/img/products/product-img-1.jpg' %}" width="120" class="mb-3 rounded" alt="">
+              <input type="file" class="form-control" name="image" accept="image/*">
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+              <a href="{% url 'dashboard_seller' %}" class="btn btn-secondary">Cancel</a>
+              <button type="submit" class="btn btn-primary">Update Product</button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

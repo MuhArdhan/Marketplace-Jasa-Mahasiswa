@@ -1,0 +1,737 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Admin Dashboard - Marketplace Mahasiswa{% endblock %}
+
+{% block nav_last_item %}
+<li class="current-list-item">
+  <a href="{% url 'dashboard_admin' %}">dashboardadmin</a>
+</li>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .page-title {
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    color: #2c2c7c;
+    margin-bottom: 25px;
+  }
+  .section-title-small {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: #2c2c7c;
+    margin-bottom: 15px;
+  }
+  .badge-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .badge-published { background: #28a745; }
+  .badge-unpublished { background: #6c757d; }
+  .badge-takedown { background: #dc3545; }
+
+  .btn-dashboard {
+    border-radius: 20px;
+    font-size: 14px;
+    padding: 6px 14px;
+    font-weight: 600;
+  }
+  .table-dashboard th,
+  .table-dashboard td {
+    vertical-align: middle !important;
+  }
+  .table-dashboard img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .card-summary {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.06);
+    margin-bottom: 25px;
+  }
+  .card-summary h2 {
+    font-size: 30px;
+    margin: 5px 0 10px 0;
+    color: #2c2c7c;
+  }
+  .card-summary p {
+    margin: 0;
+    color: #777;
+  }
+
+  /* biar modal tetap cakep walau theme fruitkha */
+  .modal-title {
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    color: #2c2c7c;
+  }
+  .form-help {
+    font-size: 13px;
+    color: #666;
+    margin-top: 6px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- BREADCRUMB -->
+<div class="breadcrumb-section breadcrumb-bg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2 text-center">
+        <div class="breadcrumb-text">
+          <p>Panel Admin</p>
+          <h1>Admin Dashboard</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RINGKASAN -->
+<div class="cart-section mt-150 mb-100">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-lg-12">
+        <h1 class="page-title">Ringkasan Marketplace</h1>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-3 col-md-6">
+        <div class="card-summary text-center">
+          <p>Total Listing</p>
+          <h2>245</h2>
+          <p>Semua jasa yang diupload seller.</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card-summary text-center">
+          <p>Listing Aktif</p>
+          <h2>210</h2>
+          <p>Tampil di halaman Produk Jasa.</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card-summary text-center">
+          <p>Listing Ditakedown</p>
+          <h2>15</h2>
+          <p>Melanggar atau terindikasi penipuan.</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card-summary text-center">
+          <p>Pengguna</p>
+          <h2>530</h2>
+          <p>Seller & customer terdaftar.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1. KELOLA LISTING JASA -->
+<div class="cart-section mb-100">
+  <div class="container">
+
+    <div class="row mb-3">
+      <div class="col-lg-12">
+        <h2 class="section-title-small">Kelola Listing Jasa</h2>
+        <p style="margin-bottom:0;color:#666;">
+          Admin bisa <b>edit</b> informasi listing, mengubah <b>status publish</b>, dan melakukan <b>take down</b> jika melanggar aturan.
+        </p>
+      </div>
+    </div>
+
+    <div class="cart-table-wrap">
+      <table class="table table-dashboard">
+        <thead style="background:#f6f6f6;">
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Seller</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th style="min-width:250px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- LISTING 1 -->
+          <tr>
+            <td><img src="{% static 'assets/img/products/fotografi.jpg' %}" alt=""/></td>
+            <td>Fotografi Asep</td>
+            <td>Asep</td>
+            <td>Rp 50.000</td>
+            <td>10</td>
+            <td><span class="badge-status badge-published">Published</span></td>
+            <td>
+              <!-- EDIT -> modal -->
+              <button
+                type="button"
+                class="btn btn-primary btn-dashboard js-edit-listing"
+                data-toggle="modal"
+                data-target="#modalEditListing"
+                data-id="LIST-001"
+                data-name="Fotografi Asep"
+                data-seller="Asep"
+                data-price="50000"
+                data-stock="10"
+                data-status="published"
+                data-note="Listing aman, tidak ada laporan."
+              >
+                Edit
+              </button>
+
+              <button type="button" class="btn btn-warning btn-dashboard">
+                Unpublish
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-danger btn-dashboard js-takedown"
+                data-toggle="modal"
+                data-target="#modalTakeDown"
+                data-id="LIST-001"
+                data-name="Fotografi Asep"
+                data-seller="Asep"
+              >
+                Take Down
+              </button>
+            </td>
+          </tr>
+
+          <!-- LISTING 2 -->
+          <tr>
+            <td><img src="{% static 'assets/img/products/desaingrafis.jpg' %}" alt=""/></td>
+            <td>Desain Grafis</td>
+            <td>Bahlil</td>
+            <td>Rp 50.000</td>
+            <td>5</td>
+            <td><span class="badge-status badge-unpublished">Unpublished</span></td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-primary btn-dashboard js-edit-listing"
+                data-toggle="modal"
+                data-target="#modalEditListing"
+                data-id="LIST-002"
+                data-name="Desain Grafis"
+                data-seller="Bahlil"
+                data-price="50000"
+                data-stock="5"
+                data-status="unpublished"
+                data-note="Draft/Unpublished dari seller."
+              >
+                Edit
+              </button>
+
+              <button type="button" class="btn btn-success btn-dashboard">
+                Publish
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-danger btn-dashboard js-takedown"
+                data-toggle="modal"
+                data-target="#modalTakeDown"
+                data-id="LIST-002"
+                data-name="Desain Grafis"
+                data-seller="Bahlil"
+              >
+                Take Down
+              </button>
+            </td>
+          </tr>
+
+          <!-- LISTING 3 -->
+          <tr>
+            <td><img src="{% static 'assets/img/products/psikolog.jpg' %}" alt=""/></td>
+            <td>Konseling Psikolog</td>
+            <td>Asep</td>
+            <td>Rp 75.000</td>
+            <td>7</td>
+            <td><span class="badge-status badge-takedown">Taken Down</span></td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-primary btn-dashboard js-edit-listing"
+                data-toggle="modal"
+                data-target="#modalEditListing"
+                data-id="LIST-003"
+                data-name="Konseling Psikolog"
+                data-seller="Asep"
+                data-price="75000"
+                data-stock="7"
+                data-status="takedown"
+                data-note="Ditakedown karena deskripsi menyesatkan (dummy)."
+              >
+                Edit
+              </button>
+
+              <button type="button" class="btn btn-success btn-dashboard">
+                Pulihkan
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-danger btn-dashboard js-takedown"
+                data-toggle="modal"
+                data-target="#modalTakeDown"
+                data-id="LIST-003"
+                data-name="Konseling Psikolog"
+                data-seller="Asep"
+              >
+                Take Down
+              </button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- 2. KELOLA USER -->
+<div class="cart-section mb-100" style="background:#f8f8f8;">
+  <div class="container">
+
+    <h2 class="section-title-small mb-4">Kelola User</h2>
+    <p style="color:#666;margin-top:-10px;">
+      Admin bisa melihat detail user, mengubah status (aktif/suspend/blokir), dan memantau aktivitas dasar.
+    </p>
+
+    <h5 class="mb-3">Seller</h5>
+    <div class="cart-table-wrap mb-5">
+      <table class="table table-dashboard">
+        <thead style="background:#f6f6f6;">
+          <tr>
+            <th>Nama</th>
+            <th>Email</th>
+            <th>Jumlah Listing</th>
+            <th>Status</th>
+            <th style="min-width:260px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td>Asep</td>
+            <td>asep@example.com</td>
+            <td>3</td>
+            <td><span class="badge-status badge-published">Aktif</span></td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-primary btn-dashboard js-user-detail"
+                data-toggle="modal"
+                data-target="#modalUserDetail"
+                data-role="Seller"
+                data-name="Asep"
+                data-email="asep@example.com"
+                data-status="Aktif"
+                data-metric1="3 listing"
+                data-metric2="Rating: 4.8 (dummy)"
+                data-metric3="Terakhir aktif: hari ini (dummy)"
+              >
+                Detail
+              </button>
+              <button type="button" class="btn btn-warning btn-dashboard">Suspend</button>
+              <button type="button" class="btn btn-danger btn-dashboard">Hapus</button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Bahlil</td>
+            <td>bahlil@example.com</td>
+            <td>1</td>
+            <td><span class="badge-status badge-unpublished">Suspended</span></td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-primary btn-dashboard js-user-detail"
+                data-toggle="modal"
+                data-target="#modalUserDetail"
+                data-role="Seller"
+                data-name="Bahlil"
+                data-email="bahlil@example.com"
+                data-status="Suspended"
+                data-metric1="1 listing"
+                data-metric2="Rating: 4.2 (dummy)"
+                data-metric3="Terakhir aktif: 7 hari lalu (dummy)"
+              >
+                Detail
+              </button>
+              <button type="button" class="btn btn-success btn-dashboard">Aktifkan</button>
+              <button type="button" class="btn btn-danger btn-dashboard">Hapus</button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <h5 class="mb-3">Customer</h5>
+    <div class="cart-table-wrap">
+      <table class="table table-dashboard">
+        <thead style="background:#f6f6f6;">
+          <tr>
+            <th>Nama</th>
+            <th>Email</th>
+            <th>Total Transaksi</th>
+            <th>Status</th>
+            <th style="min-width:260px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td>Jamal</td>
+            <td>jamal@example.com</td>
+            <td>5</td>
+            <td><span class="badge-status badge-published">Aktif</span></td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-primary btn-dashboard js-user-detail"
+                data-toggle="modal"
+                data-target="#modalUserDetail"
+                data-role="Customer"
+                data-name="Jamal"
+                data-email="jamal@example.com"
+                data-status="Aktif"
+                data-metric1="5 transaksi"
+                data-metric2="Komplain: 0 (dummy)"
+                data-metric3="Terakhir transaksi: kemarin (dummy)"
+              >
+                Detail
+              </button>
+              <button type="button" class="btn btn-warning btn-dashboard">Blokir</button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Siti</td>
+            <td>siti@example.com</td>
+            <td>2</td>
+            <td><span class="badge-status badge-takedown">Diblokir</span></td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-primary btn-dashboard js-user-detail"
+                data-toggle="modal"
+                data-target="#modalUserDetail"
+                data-role="Customer"
+                data-name="Siti"
+                data-email="siti@example.com"
+                data-status="Diblokir"
+                data-metric1="2 transaksi"
+                data-metric2="Komplain: 1 (dummy)"
+                data-metric3="Terakhir transaksi: 1 bulan lalu (dummy)"
+              >
+                Detail
+              </button>
+              <button type="button" class="btn btn-success btn-dashboard">Buka Blokir</button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- 3. RIWAYAT PEMBAYARAN -->
+<div class="cart-section mb-150">
+  <div class="container">
+
+    <h2 class="section-title-small mb-4">Riwayat Pembayaran & Transaksi</h2>
+    <p class="mb-4" style="color:#666;">
+      Walau customer diarahkan ke WhatsApp seller, admin bisa menyimpan <b>log transaksi</b>:
+      siapa customer, siapa seller, jasa apa, total, dan statusnya (misal: menunggu/selesai).
+    </p>
+
+    <div class="cart-table-wrap">
+      <table class="table table-dashboard">
+        <thead style="background:#f6f6f6;">
+          <tr>
+            <th>ID Transaksi</th>
+            <th>Tanggal</th>
+            <th>Customer</th>
+            <th>Seller</th>
+            <th>Jasa</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Catatan</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td>TRX-2025-001</td>
+            <td>10/12/2025</td>
+            <td>Jamal</td>
+            <td>Asep</td>
+            <td>Fotografi Asep</td>
+            <td>Rp 50.000</td>
+            <td><span class="badge-status badge-published">Selesai</span></td>
+            <td>Order via WA, bukti transfer sudah dicek. (dummy)</td>
+          </tr>
+
+          <tr>
+            <td>TRX-2025-002</td>
+            <td>11/12/2025</td>
+            <td>Siti</td>
+            <td>Bahlil</td>
+            <td>Desain Grafis</td>
+            <td>Rp 50.000</td>
+            <td><span class="badge-status badge-unpublished" style="background:#ffc107;">Menunggu</span></td>
+            <td>Customer sudah chat WA, menunggu pembayaran. (dummy)</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================= -->
+<!-- MODAL: EDIT LISTING -->
+<!-- ========================= -->
+<div class="modal fade" id="modalEditListing" tabindex="-1" role="dialog" aria-labelledby="modalEditListingLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditListingLabel">Edit Listing</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div style="margin-bottom:10px;color:#666;">
+          <b>ID:</b> <span id="editListingId">-</span> &nbsp;|&nbsp;
+          <b>Seller:</b> <span id="editListingSeller">-</span>
+        </div>
+
+        <form action="#" method="post">
+          <div class="row">
+            <div class="col-md-8 mb-3">
+              <label class="form-label">Nama Jasa</label>
+              <input id="editListingName" type="text" class="form-control" placeholder="Nama jasa">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Status</label>
+              <select id="editListingStatus" class="form-control">
+                <option value="published">Published</option>
+                <option value="unpublished">Unpublished</option>
+                <option value="takedown">Taken Down</option>
+              </select>
+              <div class="form-help">Status menentukan apakah tampil di katalog atau tidak.</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Harga (angka)</label>
+              <input id="editListingPrice" type="number" class="form-control" placeholder="contoh: 50000">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Stock</label>
+              <input id="editListingStock" type="number" class="form-control" placeholder="contoh: 10">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Catatan Admin</label>
+            <textarea id="editListingNote" class="form-control" rows="4" placeholder="Catatan internal admin..."></textarea>
+            <div class="form-help">
+              Misal: alasan unpublish/takedown, hasil pengecekan laporan, dll.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Aksi cepat</label><br>
+            <button type="button" class="btn btn-success btn-dashboard">Publish</button>
+            <button type="button" class="btn btn-warning btn-dashboard">Unpublish</button>
+            <button type="button" class="btn btn-danger btn-dashboard">Take Down</button>
+            <div class="form-help">Masih dummy. Nanti bisa disambungkan ke backend.</div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-dashboard" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary btn-dashboard">Simpan Perubahan (Dummy)</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ========================= -->
+<!-- MODAL: TAKE DOWN CONFIRM -->
+<!-- ========================= -->
+<div class="modal fade" id="modalTakeDown" tabindex="-1" role="dialog" aria-labelledby="modalTakeDownLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTakeDownLabel">Konfirmasi Take Down</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p style="margin-bottom:8px;">
+          Kamu akan melakukan <b>take down</b> untuk listing:
+        </p>
+        <div style="color:#2c2c7c;font-weight:700;">
+          <span id="tdName">-</span>
+        </div>
+        <div style="color:#666;margin-top:4px;">
+          ID: <span id="tdId">-</span> | Seller: <span id="tdSeller">-</span>
+        </div>
+
+        <div class="mt-3">
+          <label class="form-label">Alasan Take Down (Dummy)</label>
+          <textarea class="form-control" rows="3" placeholder="Misal: spam/penipuan/deskripsi menyesatkan/dll"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-dashboard" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-danger btn-dashboard">Take Down (Dummy)</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ========================= -->
+<!-- MODAL: USER DETAIL -->
+<!-- ========================= -->
+<div class="modal fade" id="modalUserDetail" tabindex="-1" role="dialog" aria-labelledby="modalUserDetailLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalUserDetailLabel">Detail User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-8">
+            <h4 style="margin-bottom:8px;color:#2c2c7c;font-weight:800;">
+              <span id="udName">-</span>
+            </h4>
+            <div style="color:#666;">
+              <b>Role:</b> <span id="udRole">-</span><br>
+              <b>Email:</b> <span id="udEmail">-</span><br>
+              <b>Status:</b> <span id="udStatus">-</span>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div style="background:#f7f7f7;border-radius:12px;padding:14px;">
+              <div style="font-weight:700;margin-bottom:10px;color:#2c2c7c;">Ringkasan</div>
+              <div style="color:#555;">
+                • <span id="udMetric1">-</span><br>
+                • <span id="udMetric2">-</span><br>
+                • <span id="udMetric3">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <h5 style="font-weight:700;color:#2c2c7c;">Aksi Admin</h5>
+        <p style="color:#666;margin-top:-6px;">
+          Ini masih template. Nanti bisa dihubungkan ke backend untuk suspend/blokir/hapus user.
+        </p>
+
+        <div class="d-flex flex-wrap" style="gap:10px;">
+          <button type="button" class="btn btn-success btn-dashboard">Aktifkan</button>
+          <button type="button" class="btn btn-warning btn-dashboard">Suspend / Blokir</button>
+          <button type="button" class="btn btn-danger btn-dashboard">Hapus</button>
+        </div>
+
+        <div class="form-help">
+          Untuk Seller: bisa tambahkan fitur verifikasi/approve. Untuk Customer: bisa simpan riwayat laporan/komplain.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-dashboard" data-dismiss="modal">Tutup</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ========================= -->
+<!-- JS: isi modal dari data-* -->
+<!-- ========================= -->
+<script>
+  // Edit listing
+  $(document).on("click", ".js-edit-listing", function () {
+    const id = $(this).data("id");
+    const name = $(this).data("name");
+    const seller = $(this).data("seller");
+    const price = $(this).data("price");
+    const stock = $(this).data("stock");
+    const status = $(this).data("status");
+    const note = $(this).data("note");
+
+    $("#editListingId").text(id || "-");
+    $("#editListingSeller").text(seller || "-");
+    $("#editListingName").val(name || "");
+    $("#editListingPrice").val(price || "");
+    $("#editListingStock").val(stock || "");
+    $("#editListingStatus").val(status || "unpublished");
+    $("#editListingNote").val(note || "");
+  });
+
+  // Take down confirm
+  $(document).on("click", ".js-takedown", function () {
+    $("#tdId").text($(this).data("id") || "-");
+    $("#tdName").text($(this).data("name") || "-");
+    $("#tdSeller").text($(this).data("seller") || "-");
+  });
+
+  // User detail
+  $(document).on("click", ".js-user-detail", function () {
+    $("#udRole").text($(this).data("role") || "-");
+    $("#udName").text($(this).data("name") || "-");
+    $("#udEmail").text($(this).data("email") || "-");
+    $("#udStatus").text($(this).data("status") || "-");
+
+    $("#udMetric1").text($(this).data("metric1") || "-");
+    $("#udMetric2").text($(this).data("metric2") || "-");
+    $("#udMetric3").text($(this).data("metric3") || "-");
+  });
+</script>
+
+{% endblock %}

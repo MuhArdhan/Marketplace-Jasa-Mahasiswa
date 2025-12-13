@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block nav_login_active %}current-list-item{% endblock %}
+
+{% block content %}
+<style>
+  .auth-section {
+    padding-top: 150px;   /* offset header sticky */
+    padding-bottom: 150px;
+  }
+
+  .auth-box {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+  }
+
+  .auth-box h2 {
+    margin-bottom: 30px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .auth-btn {
+    width: 100%;
+    background-color: #30318b;
+    color: #fff;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 18px;
+    border: none;
+    transition: 0.3s;
+  }
+
+  .auth-btn:hover {
+    background-color: #242566;
+  }
+
+  .auth-link {
+    text-align: center;
+    margin-top: 15px;
+  }
+
+  .auth-link a {
+    color: #051922;
+    font-weight: 600;
+  }
+</style>
+
+<div class="auth-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-8">
+        <div class="auth-box">
+          <h2>Register</h2>
+
+          <form method="POST" action="#">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label class="form-label">Nama</label>
+              <input type="text" class="form-control" placeholder="Masukkan nama lengkap" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" placeholder="Masukkan email" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" class="form-control" placeholder="Masukkan password" required>
+            </div>
+
+            <button type="submit" class="auth-btn">Register</button>
+
+            <div class="auth-link">
+              <p>Sudah punya akun? <a href="{% url 'login' %}">Login di sini</a></p>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,106 +1,180 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Cart - Marketplace Jasa Mahasiswa{% endblock %}
+
+{% block title %}Keranjang - Marketplace Mahasiswa{% endblock %}
+{% block nav_shop_active %}current-list-item{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* aman dari sticky header */
+  .cart-page {
+    padding-top: 170px;
+    padding-bottom: 150px;
+  }
+
+  /* image di table */
+  .cart-table td img {
+    max-width: 80px;
+    border-radius: 8px;
+  }
+
+  .small-note {
+    color: #666;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<!-- Single Page Header start -->
-<div class="container-fluid page-header py-5">
-  <h1 class="text-center text-white display-6">Cart</h1>
-  <ol class="breadcrumb justify-content-center mb-0">
-    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="#">Pages</a></li>
-    <li class="breadcrumb-item active text-white">Cart</li>
-  </ol>
-</div>
-<!-- Single Page Header End -->
-
-<!-- Cart Page Start -->
-<div class="container-fluid py-5">
-  <div class="container py-5">
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Products</th>
-            <th scope="col">Name</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Total</th>
-            <th scope="col">Handle</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">
-              <div class="d-flex align-items-center">
-                <img src="{% static 'assets/img/vegetable-item-3.png' %}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
-              </div>
-            </th>
-            <td><p class="mb-0 mt-4">Big Banana</p></td>
-            <td><p class="mb-0 mt-4">$2.99</p></td>
-            <td>
-              <div class="input-group quantity mt-4" style="width: 100px;">
-                <button class="btn btn-sm btn-minus rounded-circle bg-light border"><i class="fa fa-minus"></i></button>
-                <input type="text" class="form-control form-control-sm text-center border-0" value="1">
-                <button class="btn btn-sm btn-plus rounded-circle bg-light border"><i class="fa fa-plus"></i></button>
-              </div>
-            </td>
-            <td><p class="mb-0 mt-4">$2.99</p></td>
-            <td><button class="btn btn-md rounded-circle bg-light border mt-4"><i class="fa fa-times text-danger"></i></button></td>
-          </tr>
-          <tr>
-            <th scope="row">
-              <div class="d-flex align-items-center">
-                <img src="{% static 'assets/img/vegetable-item-5.jpg' %}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
-              </div>
-            </th>
-            <td><p class="mb-0 mt-4">Potatoes</p></td>
-            <td><p class="mb-0 mt-4">$2.99</p></td>
-            <td>
-              <div class="input-group quantity mt-4" style="width: 100px;">
-                <button class="btn btn-sm btn-minus rounded-circle bg-light border"><i class="fa fa-minus"></i></button>
-                <input type="text" class="form-control form-control-sm text-center border-0" value="1">
-                <button class="btn btn-sm btn-plus rounded-circle bg-light border"><i class="fa fa-plus"></i></button>
-              </div>
-            </td>
-            <td><p class="mb-0 mt-4">$2.99</p></td>
-            <td><button class="btn btn-md rounded-circle bg-light border mt-4"><i class="fa fa-times text-danger"></i></button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="mt-5">
-      <input type="text" class="border-0 border-bottom rounded me-5 py-3 mb-4" placeholder="Coupon Code">
-      <button class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">Apply Coupon</button>
-    </div>
-
-    <div class="row g-4 justify-content-end">
-      <div class="col-8"></div>
-      <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
-        <div class="bg-light rounded">
-          <div class="p-4">
-            <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
-            <div class="d-flex justify-content-between mb-4">
-              <h5 class="mb-0 me-4">Subtotal:</h5>
-              <p class="mb-0">$96.00</p>
-            </div>
-            <div class="d-flex justify-content-between">
-              <h5 class="mb-0 me-4">Shipping</h5>
-              <div><p class="mb-0">Flat rate: $3.00</p></div>
-            </div>
-            <p class="mb-0 text-end">Shipping to Indonesia.</p>
-          </div>
-          <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
-            <h5 class="mb-0 ps-4 me-4">Total</h5>
-            <p class="mb-0 pe-4">$99.00</p>
-          </div>
-          <a href="{% url 'checkout' %}" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">Proceed Checkout</a>
+<!-- breadcrumb -->
+<div class="breadcrumb-section breadcrumb-bg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2 text-center">
+        <div class="breadcrumb-text">
+          <p>Daftar jasa yang ingin kamu pesan</p>
+          <h1>Keranjang</h1>
         </div>
       </div>
     </div>
   </div>
 </div>
-<!-- Cart Page End -->
+
+<!-- cart -->
+<div class="cart-section cart-page">
+  <div class="container">
+    <div class="row">
+
+      <!-- kiri: tabel keranjang -->
+      <div class="col-lg-8 col-md-12">
+        <div class="cart-table-wrap">
+          <table class="cart-table">
+            <thead class="cart-table-head">
+              <tr class="table-head-row">
+                <th class="product-remove"></th>
+                <th class="product-image">Gambar</th>
+                <th class="product-name">Nama Jasa</th>
+                <th class="product-price">Harga</th>
+                <th class="product-quantity">Jumlah</th>
+                <th class="product-total">Total</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- contoh item 1 -->
+              <tr class="table-body-row">
+                <td class="product-remove">
+                  <a href="#"><i class="far fa-window-close"></i></a>
+                </td>
+                <td class="product-image">
+                  <img src="{% static 'assets/img/products/fotografi.jpg' %}" alt="Fotografi">
+                </td>
+                <td class="product-name">
+                  Fotografi Asep
+                  <div class="small-note"><strong>Seller:</strong> Mahasiswa UMS</div>
+                </td>
+                <td class="product-price">Rp 50.000</td>
+                <td class="product-quantity">
+                  <input type="number" value="1" min="1">
+                </td>
+                <td class="product-total">Rp 50.000</td>
+              </tr>
+
+              <!-- contoh item 2 -->
+              <tr class="table-body-row">
+                <td class="product-remove">
+                  <a href="#"><i class="far fa-window-close"></i></a>
+                </td>
+                <td class="product-image">
+                  <img src="{% static 'assets/img/products/desaingrafis.jpg' %}" alt="Desain Grafis">
+                </td>
+                <td class="product-name">
+                  Desain Grafis
+                  <div class="small-note"><strong>Seller:</strong> Bahlil</div>
+                </td>
+                <td class="product-price">Rp 50.000</td>
+                <td class="product-quantity">
+                  <input type="number" value="1" min="1">
+                </td>
+                <td class="product-total">Rp 50.000</td>
+              </tr>
+
+              <!-- contoh item 3 -->
+              <tr class="table-body-row">
+                <td class="product-remove">
+                  <a href="#"><i class="far fa-window-close"></i></a>
+                </td>
+                <td class="product-image">
+                  <img src="{% static 'assets/img/products/psikolog.jpg' %}" alt="Psikolog">
+                </td>
+                <td class="product-name">
+                  Konseling Psikolog
+                  <div class="small-note"><strong>Seller:</strong> Asep</div>
+                </td>
+                <td class="product-price">Rp 75.000</td>
+                <td class="product-quantity">
+                  <input type="number" value="1" min="1">
+                </td>
+                <td class="product-total">Rp 75.000</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+
+      <!-- kanan: ringkasan -->
+      <div class="col-lg-4">
+        <div class="total-section">
+          <table class="total-table">
+            <thead class="total-table-head">
+              <tr class="table-total-row">
+                <th>Ringkasan</th>
+                <th>Nominal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="total-data">
+                <td><strong>Subtotal</strong></td>
+                <td>Rp 175.000</td>
+              </tr>
+              <tr class="total-data">
+                <td><strong>Biaya Platform</strong></td>
+                <td>Rp 0</td>
+              </tr>
+              <tr class="total-data">
+                <td><strong>Total</strong></td>
+                <td>Rp 175.000</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="cart-buttons">
+            <a href="{% url 'shop' %}" class="boxed-btn">Lanjut Cari Jasa</a>
+            <a href="{% url 'checkout' %}" class="boxed-btn black">Checkout</a>
+          </div>
+
+        </div>
+
+        <!-- info singkat (ganti dari coupon) -->
+        <div class="coupon-section">
+          <h3>Catatan untuk Seller</h3>
+          <div class="coupon-form-wrap">
+            <form action="#">
+              <p><input type="text" placeholder="Contoh: Butuh pengerjaan hari Jumat"></p>
+              <p><input type="submit" value="Simpan (Dummy)"></p>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- end cart -->
+
 {% endblock %}

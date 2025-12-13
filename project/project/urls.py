@@ -8,15 +8,50 @@ from django.urls import include
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # Halaman utama (Home)
+    # Home
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
-     # Halaman Shop List
-    path('shop/', TemplateView.as_view(template_name='shop_list.html'), name='shop'),
-    # Halaman Shop Detail
-    path('shop/detail/', TemplateView.as_view(template_name='shop_detail.html'), name='shop_detail'),
-    path('', include('transactions.urls')),
+
+    # About
+    path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
+
+    # Contact
     path('contact/', TemplateView.as_view(template_name='contact.html'), name='contact'),
 
+    # Shop list
+    path('shop/', TemplateView.as_view(template_name='shop.html'), name='shop'),
+
+    # Product detail page
+    path('product/', TemplateView.as_view(template_name='productpage.html'), name='product_page'),
+
+    # Login & Register
+    path('login/', TemplateView.as_view(template_name='login.html'), name='login'),
+    path('register/', TemplateView.as_view(template_name='register.html'), name='register'),
+
+    # Dashboard Seller
+    path('dashboard-seller/', 
+         TemplateView.as_view(template_name='dashboardseller.html'), 
+         name='dashboard_seller'),
+
+    # Add Product
+    path(
+        'dashboard-seller/add-product/',
+        TemplateView.as_view(template_name='addproduct.html'),
+        name='addproduct'
+    ),
+
+    # Edit Product
+    path(
+        'dashboard-seller/edit-product/',
+        TemplateView.as_view(template_name='editproduct.html'),
+        name='editproduct'
+    ),
+
+    # Dashboard Admin
+    path('dashboard-admin/', 
+         TemplateView.as_view(template_name='dashboardadmin.html'), 
+         name='dashboard_admin'),
+
+    path('transactions/', include('transactions.urls')),
 
 ]
 

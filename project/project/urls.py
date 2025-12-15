@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Home
+    path('', include('users.urls')),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
 
     # About
@@ -23,9 +24,10 @@ urlpatterns = [
     # Product detail page
     path('product/', TemplateView.as_view(template_name='productpage.html'), name='product_page'),
 
-    # Login & Register
-    path('login/', TemplateView.as_view(template_name='login.html'), name='login'),
-    path('register/', TemplateView.as_view(template_name='register.html'), name='register'),
+    # # Login & Register
+    # path('login/', TemplateView.as_view(template_name='login.html'), name='login'),
+    # path('cstregister/', TemplateView.as_view(template_name='customer_register.html'), name='customer_register'),
+    # path('register/', TemplateView.as_view(template_name='register.html'), name='register'),
 
     # Dashboard Seller
     path('dashboard-seller/', 

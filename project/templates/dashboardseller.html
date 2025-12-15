@@ -3,12 +3,7 @@
 
 {% block title %}Dashboard Seller{% endblock %}
 
-{# ✅ Login hilang, ganti menu terakhir jadi Dashboard #}
-{% block nav_last_item %}
-<li class="current-list-item">
-  <a href="{% url 'dashboard_seller' %}">dashboard</a>
-</li>
-{% endblock %}
+{% block nav_dashboard_active %}current-list-item{% endblock %}
 
 {% block extra_head %}
 <style>

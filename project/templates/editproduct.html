@@ -33,6 +33,11 @@
             </div>
 
             <div class="mb-3">
+              <label class="form-label">Price</label>
+              <input type="number" class="form-control" name="harga" value="{{ jasa.harga }}" required>
+            </div>
+
+            <div class="mb-3">
               <label class="form-label">Current Image</label><br>
               <img src="{{ jasa.image.url }}" width="120" class="mb-3 rounded" alt="">
               <input type="file" class="form-control" name="image" accept="image/*">

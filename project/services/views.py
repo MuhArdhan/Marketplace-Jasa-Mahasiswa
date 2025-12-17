@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 def shop(request):
-    jasa_list = Jasa.objects.all()
+    jasa_list = Jasa.objects.filter(status='Published')
     print(jasa_list)
     return render(request, "shop.html", {
         "jasa_list": jasa_list
@@ -41,12 +41,14 @@ def add_jasa(request):
         name_jasa = request.POST.get("name_jasa")
         deskripsi = request.POST.get("deskripsi")
         image = request.FILES.get("image")
+        harga = request.POST.get("harga")
 
         Jasa.objects.create(
             vendor_id_vendor=vendor,
             name_jasa=name_jasa,
             deskripsi=deskripsi,
-            image=image
+            image=image,
+            harga=harga
         )
 
         return redirect("dashboard_seller")
@@ -68,6 +70,7 @@ def update_jasa(request, jasa_id):
         jasa.name_jasa = request.POST.get("name_jasa")
         jasa.deskripsi = request.POST.get("deskripsi")
         jasa.image = request.FILES.get("image", jasa.image)
+        jasa.harga = request.POST.get("harga", jasa.harga)
         jasa.save()
 
         return redirect("dashboard_seller")
@@ -88,4 +91,27 @@ def delete_jasa(request, jasa_id):
     )
 
     jasa.delete()
+    return redirect("dashboard_seller")
+
+def toggle_jasa_status(request, jasa_id):
+    vendor_id = request.session.get("user_id")
+    if not vendor_id:
+        return redirect("login")
+
+    vendor = get_object_or_404(Vendor, id_vendor=vendor_id)
+
+    jasa = get_object_or_404(
+        Jasa,
+        id_jasa=jasa_id,
+        vendor_id_vendor=vendor
+    )
+
+    # Toggle status
+    if jasa.status == "Published":
+        jasa.status = "Draft"
+    else:
+        jasa.status = "Published"
+
+    jasa.save()
+
     return redirect("dashboard_seller")

@@ -48,6 +48,7 @@
                 <th class="product-name">Name</th>
                 <th class="product-description">Description</th>
                 <th class="product-price">Price</th>
+                <th class="product-status">Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -60,9 +61,29 @@
                 </td>
                 <td class="product-name">{{ jasa.name_jasa }}</td>
                 <td class="product-description">{{ jasa.deskripsi }}</td>
-                <td>${{ jasa.price }}</td>
+                <td>Rp. {{ jasa.harga }}</td>
+                <td class="product-status">
+                  {% if jasa.status == "Published" %}
+                    <span class="badge bg-success">Published</span>
+                  {% else %}
+                    <span class="badge bg-secondary">Unpublished</span>
+                  {% endif %}
+                </td>
                 <td>
                   <a href="{% url 'update_jasa' jasa.id_jasa %}" class="btn btn-sm btn-primary">Edit</a>
+
+                  {% if jasa.status == "Published" %}
+                  <a href="{% url 'toggle_jasa_status' jasa.id_jasa %}"
+                    class="btn btn-sm btn-warning">
+                    Unpublish
+                  </a>
+                  {% else %}
+                    <a href="{% url 'toggle_jasa_status' jasa.id_jasa %}"
+                      class="btn btn-sm btn-success">
+                      Publish
+                    </a>
+                  {% endif %}
+
                   <a href="{% url 'delete_jasa' jasa.id_jasa %}" class="btn btn-sm btn-danger">Delete</a>
                 </td>
               </tr>

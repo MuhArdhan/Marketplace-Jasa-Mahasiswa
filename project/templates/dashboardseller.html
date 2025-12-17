@@ -35,7 +35,7 @@
         <div class="d-flex justify-content-between align-items-center dashboard-title-row">
           <h3 class="mb-0">Your Products</h3>
 
-          <a href="{% url 'addproduct' %}" class="btn btn-success">
+          <a href="{% url 'add_jasa' %}" class="btn btn-success">
             <i class="fas fa-plus"></i> Add New Product
           </a>
         </div>
@@ -46,58 +46,31 @@
               <tr class="table-head-row">
                 <th class="product-image">Image</th>
                 <th class="product-name">Name</th>
+                <th class="product-description">Description</th>
                 <th class="product-price">Price</th>
-                <th class="product-quantity">Stock</th>
-                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
 
             <tbody>
               <tr class="table-body-row">
+                {% for jasa in jasa_list %}
                 <td class="product-image">
-                  <img src="{% static 'assets/img/products/product-img-1.jpg' %}" alt="">
+                  <img src="{{ jasa.image.url }}" alt="">
                 </td>
-                <td class="product-name">Strawberry</td>
-                <td>$85</td>
-                <td>50</td>
-                <td><span class="badge bg-success text-white">Published</span></td>
+                <td class="product-name">{{ jasa.name_jasa }}</td>
+                <td class="product-description">{{ jasa.deskripsi }}</td>
+                <td>${{ jasa.price }}</td>
                 <td>
-                  <a href="{% url 'editproduct' %}" class="btn btn-sm btn-primary">Edit</a>
-                  <a href="#" class="btn btn-sm btn-warning">Unpublish</a>
-                  <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                  <a href="{% url 'update_jasa' jasa.id_jasa %}" class="btn btn-sm btn-primary">Edit</a>
+                  <a href="{% url 'delete_jasa' jasa.id_jasa %}" class="btn btn-sm btn-danger">Delete</a>
                 </td>
               </tr>
-
-              <tr class="table-body-row">
-                <td class="product-image">
-                  <img src="{% static 'assets/img/products/product-img-2.jpg' %}" alt="">
-                </td>
-                <td>Berry</td>
-                <td>$70</td>
-                <td>23</td>
-                <td><span class="badge bg-secondary text-white">Draft</span></td>
-                <td>
-                  <a href="{% url 'editproduct' %}" class="btn btn-sm btn-primary">Edit</a>
-                  <a href="#" class="btn btn-sm btn-success">Publish</a>
-                  <a href="#" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-              </tr>
-
-              <tr class="table-body-row">
-                <td class="product-image">
-                  <img src="{% static 'assets/img/products/product-img-3.jpg' %}" alt="">
-                </td>
-                <td>Lemon</td>
-                <td>$35</td>
-                <td>120</td>
-                <td><span class="badge bg-success text-white">Published</span></td>
-                <td>
-                  <a href="{% url 'editproduct' %}" class="btn btn-sm btn-primary">Edit</a>
-                  <a href="#" class="btn btn-sm btn-warning">Unpublish</a>
-                  <a href="#" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-              </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="6" class="text-center">No products found.</td>
+                </tr>
+                {% endfor %}
 
             </tbody>
           </table>

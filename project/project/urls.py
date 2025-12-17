@@ -29,23 +29,25 @@ urlpatterns = [
     # path('register/', TemplateView.as_view(template_name='register.html'), name='register'),
 
     # Dashboard Seller
-    path('dashboard-seller/', 
-         TemplateView.as_view(template_name='dashboardseller.html'), 
-         name='dashboard_seller'),
+    # path('dashboard-seller/', 
+    #      TemplateView.as_view(template_name='dashboardseller.html'), 
+    #      name='dashboard_seller'),
+    path('', include('services.urls')),
 
-    # Add Product
-    path(
-        'dashboard-seller/add-product/',
-        TemplateView.as_view(template_name='addproduct.html'),
-        name='addproduct'
-    ),
 
-    # Edit Product
-    path(
-        'dashboard-seller/edit-product/',
-        TemplateView.as_view(template_name='editproduct.html'),
-        name='editproduct'
-    ),
+    # # Add Product
+    # path(
+    #     'dashboard-seller/add-product/',
+    #     TemplateView.as_view(template_name='addproduct.html'),
+    #     name='addproduct'
+    # ),
+
+    # # Edit Product
+    # path(
+    #     'dashboard-seller/edit-product/',
+    #     TemplateView.as_view(template_name='editproduct.html'),
+    #     name='editproduct'
+    # ),
 
     # Dashboard Admin
     path('dashboard-admin/', 

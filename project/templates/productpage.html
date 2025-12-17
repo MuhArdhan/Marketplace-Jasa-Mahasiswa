@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Product Detail{% endblock %}
+{% block title %}{{ jasa.name_jasa }}{% endblock %}
 
 {% block content %}
 <style>
-  /* cukup untuk offset header sticky */
   .page-offset {
-    padding-top: 140px;   /* kalau masih mepet, naikkan 150 */
+    padding-top: 140px;
     padding-bottom: 150px;
   }
 </style>
@@ -15,31 +14,43 @@
 <div class="product-section page-offset">
   <div class="container">
     <div class="row align-items-center">
+
       <!-- Image -->
       <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
         <div class="product-image">
-          <img src="{% static 'assets/img/products/product-img-1.jpg' %}" class="img-fluid rounded" alt="Product">
+          <img src="{{ jasa.image.url }}"
+               class="img-fluid rounded"
+               alt="{{ jasa.name_jasa }}">
         </div>
       </div>
 
       <!-- Detail -->
       <div class="col-lg-6 col-md-12">
         <div class="single-product-text">
-          <h2 class="product-title">Fotografi Asep</h2>
-          <p class="seller-name"><strong>Seller:</strong> Mahasiswa UMS</p>
 
-          <p class="product-description">
-            Kami menyediakan kualitas fotografi yang sangat menarik, cocok untuk keperluan dokumentasi,
-            projek, maupun kebutuhan personal. Segera pesan di kami!
+          <h2 class="product-title">{{ jasa.name_jasa }}</h2>
+
+          <p class="seller-name">
+            <strong>Seller:</strong> {{ jasa.vendor_id_vendor }}
           </p>
 
-          <p class="product-price"><span>Harga</span> 50.000 Rupiah</p>
+          <p class="product-description">
+            {{ jasa.deskripsi }}
+          </p>
 
-          <a class="cart-btn" href="https://wa.me/6281234567890" target="_blank">
+          <p class="product-price">
+            ⭐ Rating: {{ jasa.rating }}/5
+          </p>
+
+          <a class="cart-btn"
+             href="https://wa.me/62{{ jasa.vendor_id_vendor.no_hp }}?text=Halo%20saya%20ingin%20memesan%20jasa%20{{ jasa.name_jasa }}%20yang%20Anda%20tawarkan."
+             target="_blank">
             <i class="fab fa-whatsapp"></i> Pesan via WhatsApp
           </a>
+
         </div>
       </div>
+
     </div>
   </div>
 </div>

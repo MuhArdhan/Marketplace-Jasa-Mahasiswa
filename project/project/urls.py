@@ -4,13 +4,14 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include
+from . import views as views_home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Home
     path('', include('users.urls')),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', views_home.home, name='home'),
 
     # About
     path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
@@ -19,10 +20,8 @@ urlpatterns = [
     path('contact/', TemplateView.as_view(template_name='contact.html'), name='contact'),
 
     # Shop list
-    path('shop/', TemplateView.as_view(template_name='shop.html'), name='shop'),
+    path('', include('services.urls')),
 
-    # Product detail page
-    path('product/', TemplateView.as_view(template_name='productpage.html'), name='product_page'),
 
     # # Login & Register
     # path('login/', TemplateView.as_view(template_name='login.html'), name='login'),

@@ -7,7 +7,9 @@ class Jasa(models.Model):
     vendor_id_vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE) 
     name_jasa = models.CharField(max_length=255)
     image = models.ImageField(upload_to='jasa_images/')
+    harga = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     deskripsi = models.TextField()
+    status = models.CharField(max_length=50, default='Published')
     rating = models.IntegerField(default=0)
 
     def __str__(self):

@@ -6,6 +6,7 @@ class Customer(models.Model):
     no_hp = models.CharField(max_length=15)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128) 
+    status = models.CharField(max_length=50, default='aktif')
 
     def __str__(self):
         return self.nama
@@ -21,6 +22,7 @@ class Vendor(models.Model):
     no_hp = models.CharField(max_length=15)
     rating = models.IntegerField(default=0)
     password = models.CharField(max_length=128)
+    status = models.CharField(max_length=50, default='aktif')
 
     def __str__(self):
         return self.nama

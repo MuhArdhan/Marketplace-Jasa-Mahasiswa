@@ -7,6 +7,7 @@ class Customer(models.Model):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128) 
     status = models.CharField(max_length=50, default='aktif')
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nama
@@ -22,7 +23,8 @@ class Vendor(models.Model):
     no_hp = models.CharField(max_length=15)
     rating = models.IntegerField(default=0)
     password = models.CharField(max_length=128)
-    status = models.CharField(max_length=50, default='aktif')
+    status = models.CharField(max_length=50, default='Aktif')
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nama

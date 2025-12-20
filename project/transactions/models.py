@@ -15,6 +15,7 @@ class Transaction(models.Model):
     nominal = models.DecimalField(max_digits=10, decimal_places=2)
     deskripsi = models.TextField()
     tanggal = models.DateField(auto_now_add=True)
+    is_deleted = models.BooleanField(default=False)
     
     def save(self, *args, **kwargs):
         # Cek apakah ini data baru (belum punya no_transaksi)

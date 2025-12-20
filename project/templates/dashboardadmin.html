@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
+{% load l10n %}
 
 {% block title %}Admin Dashboard - Marketplace Mahasiswa{% endblock %}
 
@@ -34,14 +36,22 @@
   .badge-unpublished { background: #6c757d; }
   .badge-takedown { background: #dc3545; }
 
+  .badge-selesai { background: #28a745; }
+  .badge-menunggu { background: #ffc107; }
+  .badge-dibatalkan { background: #dc3545; }
+
   .btn-dashboard {
     border-radius: 20px;
     font-size: 14px;
     padding: 6px 14px;
     font-weight: 600;
+    
   }
   .table-dashboard th,
   .table-dashboard td {
+    padding: 10px 5px !important;
+    white-space: normal;
+    word-wrap: break-word;
     vertical-align: middle !important;
   }
   .table-dashboard img {
@@ -144,7 +154,7 @@
 
     <div class="row mb-3">
       <div class="col-lg-12">
-        <h2 class="section-title-small">Kelola Listing Jasa</h2>
+        <h2 class="section-title-small" id="listing-title">Kelola Listing Jasa</h2>
         <p style="margin-bottom:0;color:#666;">
           Admin bisa <b>edit</b> informasi listing, mengubah <b>status publish</b>, dan melakukan <b>take down</b> jika melanggar aturan.
         </p>
@@ -159,143 +169,78 @@
             <th>Name</th>
             <th>Seller</th>
             <th>Price</th>
-            <th>Stock</th>
+            <th>Rating</th>
             <th>Status</th>
             <th style="min-width:250px;">Actions</th>
           </tr>
         </thead>
         <tbody>
-
+          {% for jasa in list_jasa %}
           <!-- LISTING 1 -->
-          <tr>
-            <td><img src="{% static 'assets/img/products/fotografi.jpg' %}" alt=""/></td>
-            <td>Fotografi Asep</td>
-            <td>Asep</td>
-            <td>Rp 50.000</td>
-            <td>10</td>
-            <td><span class="badge-status badge-published">Published</span></td>
-            <td>
+          <tr id="listing-{{ jasa.id_jasa }}">
+            <td><img src="{% static '{{ jasa.image }}' %}" alt=""/></td>
+            <td>{{ jasa.name_jasa }}</td>
+            <td>{{ jasa.vendor_id_vendor.nama }}</td>
+            <td>Rp {{jasa.harga}}</td>
+            <td>{{ jasa.rating }}</td>
+            <td><span id="badge-jasa-{{ jasa.id_jasa }}" class="badge-status 
+              {% if jasa.status == 'Published'%} badge-published
+              {% elif jasa.status == 'Unpublished'%} badge-unpublished 
+              {% else %} badge-takedown {% endif %}">
+              {{ jasa.status }}</span></td>
+            <td id="actions-cell-{{ jasa.id_jasa }}">
               <!-- EDIT -> modal -->
               <button
                 type="button"
                 class="btn btn-primary btn-dashboard js-edit-listing"
                 data-toggle="modal"
                 data-target="#modalEditListing"
-                data-id="LIST-001"
-                data-name="Fotografi Asep"
-                data-seller="Asep"
-                data-price="50000"
-                data-stock="10"
-                data-status="published"
-                data-note="Listing aman, tidak ada laporan."
+                data-id="{{ jasa.id_jasa }}"
+                data-name="{{ jasa.name_jasa }}"
+                data-seller="{{ jasa.vendor_id_vendor.nama }}"
+                data-price="{{ jasa.harga|unlocalize }}"
+                data-status="{{ jasa.status }}"
+                data-deskripsi="{{ jasa.deskripsi }}"
               >
                 Edit
               </button>
 
-              <button type="button" class="btn btn-warning btn-dashboard">
-                Unpublish
-              </button>
+              {% if jasa.status == 'Published' or jasa.status == "Taken Down" %}
+                <button type="button" 
+                        class="btn btn-warning btn-dashboard js-jasa-status"
+                        data-url="{% url 'update_status_jasa' %}"
+                        data-id="{{ jasa.id_jasa }}"
+                        data-status="Unpublished">
+                    Unpublish
+                </button>
+              {% else %}
+                  <button type="button" 
+                          class="btn btn-success btn-dashboard js-jasa-status"
+                          data-url="{% url 'update_status_jasa' %}"
+                          data-id="{{ jasa.id_jasa }}"
+                          data-status="Published">
+                      Publish
+                  </button>
+              {% endif %}
 
-              <button
+              <button 
                 type="button"
                 class="btn btn-danger btn-dashboard js-takedown"
                 data-toggle="modal"
                 data-target="#modalTakeDown"
-                data-id="LIST-001"
-                data-name="Fotografi Asep"
-                data-seller="Asep"
+                data-id="{{ jasa.id_jasa }}"
+                data-name="{{ jasa.name_jasa }}"
+                data-url="{% url 'update_status_jasa' %}"
+                data-seller="{{ jasa.vendor_id_vendor.nama }}"
+                data-status="Taken Down"
+                {% if jasa.status == 'Taken Down' %} disabled {% endif %}
               >
-                Take Down
+                Take Down 
               </button>
             </td>
           </tr>
-
-          <!-- LISTING 2 -->
-          <tr>
-            <td><img src="{% static 'assets/img/products/desaingrafis.jpg' %}" alt=""/></td>
-            <td>Desain Grafis</td>
-            <td>Bahlil</td>
-            <td>Rp 50.000</td>
-            <td>5</td>
-            <td><span class="badge-status badge-unpublished">Unpublished</span></td>
-            <td>
-              <button
-                type="button"
-                class="btn btn-primary btn-dashboard js-edit-listing"
-                data-toggle="modal"
-                data-target="#modalEditListing"
-                data-id="LIST-002"
-                data-name="Desain Grafis"
-                data-seller="Bahlil"
-                data-price="50000"
-                data-stock="5"
-                data-status="unpublished"
-                data-note="Draft/Unpublished dari seller."
-              >
-                Edit
-              </button>
-
-              <button type="button" class="btn btn-success btn-dashboard">
-                Publish
-              </button>
-
-              <button
-                type="button"
-                class="btn btn-danger btn-dashboard js-takedown"
-                data-toggle="modal"
-                data-target="#modalTakeDown"
-                data-id="LIST-002"
-                data-name="Desain Grafis"
-                data-seller="Bahlil"
-              >
-                Take Down
-              </button>
-            </td>
-          </tr>
-
-          <!-- LISTING 3 -->
-          <tr>
-            <td><img src="{% static 'assets/img/products/psikolog.jpg' %}" alt=""/></td>
-            <td>Konseling Psikolog</td>
-            <td>Asep</td>
-            <td>Rp 75.000</td>
-            <td>7</td>
-            <td><span class="badge-status badge-takedown">Taken Down</span></td>
-            <td>
-              <button
-                type="button"
-                class="btn btn-primary btn-dashboard js-edit-listing"
-                data-toggle="modal"
-                data-target="#modalEditListing"
-                data-id="LIST-003"
-                data-name="Konseling Psikolog"
-                data-seller="Asep"
-                data-price="75000"
-                data-stock="7"
-                data-status="takedown"
-                data-note="Ditakedown karena deskripsi menyesatkan (dummy)."
-              >
-                Edit
-              </button>
-
-              <button type="button" class="btn btn-success btn-dashboard">
-                Pulihkan
-              </button>
-
-              <button
-                type="button"
-                class="btn btn-danger btn-dashboard js-takedown"
-                data-toggle="modal"
-                data-target="#modalTakeDown"
-                data-id="LIST-003"
-                data-name="Konseling Psikolog"
-                data-seller="Asep"
-              >
-                Take Down
-              </button>
-            </td>
-          </tr>
-
+          {% endfor %}
+         
         </tbody>
       </table>
     </div>
@@ -325,59 +270,76 @@
           </tr>
         </thead>
         <tbody>
-
+          {% for vendor in list_vendor %}
           <tr>
-            <td>Asep</td>
-            <td>asep@example.com</td>
-            <td>3</td>
-            <td><span class="badge-status badge-published">Aktif</span></td>
+            <td>{{ vendor.nama }}</td>
+            <td>{{ vendor.email }}</td>
+            <td>{{ vendor.jumlah_jasa }}</td>
+            <td>
+              <span id="badge-vendor-{{ vendor.id_vendor }}" class="badge-status 
+                  {% if vendor.status == 'Aktif' and not vendor.is_deleted %} badge-published
+                  {% elif vendor.status == 'Diblokir' and not vendor.is_deleted %} badge-unpublished 
+                  {% else %} badge-takedown {% endif %}">
+                  {% if vendor.is_deleted %} Dihapus 
+                  {% else %} {{ vendor.status }}
+                  {% endif %}
+              </span>
+            </td>
             <td>
               <button
                 type="button"
-                class="btn btn-primary btn-dashboard js-user-detail"
+                class="btn btn-primary btn-dashboard btn-detail js-user-detail"
                 data-toggle="modal"
                 data-target="#modalUserDetail"
-                data-role="Seller"
-                data-name="Asep"
-                data-email="asep@example.com"
-                data-status="Aktif"
-                data-metric1="3 listing"
-                data-metric2="Rating: 4.8 (dummy)"
+                data-role="Vendor"
+                data-id="{{ vendor.id_vendor }}"
+                data-name="{{ vendor.nama }}"
+                data-email="{{ vendor.email }}"
+                data-status="{{ vendor.status }}"
+                data-metric1="{{ vendor.jumlah_jasa }} listing"
+                data-metric2="{{  vendor.rating }} Rating"
                 data-metric3="Terakhir aktif: hari ini (dummy)"
               >
                 Detail
               </button>
-              <button type="button" class="btn btn-warning btn-dashboard">Suspend</button>
-              <button type="button" class="btn btn-danger btn-dashboard">Hapus</button>
-            </td>
-          </tr>
+              {% if vendor.status == 'Aktif' %}
+                <button type="button" 
+                        class="btn btn-warning btn-dashboard btn-status js-user-status"
+                        data-url="{% url 'update_status_user' %}"
+                        data-id="{{ vendor.id_vendor }}"
+                        data-role="Vendor"
+                        data-status="Diblokir"
+                        data-is_deleted="{{ vendor.is_deleted }}"
+                        {% if vendor.is_deleted %} disabled {% endif %}>
+                    Blokir
+                </button>
+              {% else %}
+                <button type="button" 
+                        class="btn btn-success btn-dashboard btn-status js-user-status"
+                        data-url="{% url 'update_status_user' %}"
+                        data-id="{{ vendor.id_vendor }}"
+                        data-role="Vendor"
+                        data-status="Aktif"
+                        data-is_deleted="{{ vendor.is_deleted }}"
+                        {% if vendor.is_deleted %} disabled {% endif %}>
+                    Buka Blokir
+                </button>
+              {% endif %}
 
-          <tr>
-            <td>Bahlil</td>
-            <td>bahlil@example.com</td>
-            <td>1</td>
-            <td><span class="badge-status badge-unpublished">Suspended</span></td>
-            <td>
-              <button
-                type="button"
-                class="btn btn-primary btn-dashboard js-user-detail"
-                data-toggle="modal"
-                data-target="#modalUserDetail"
-                data-role="Seller"
-                data-name="Bahlil"
-                data-email="bahlil@example.com"
-                data-status="Suspended"
-                data-metric1="1 listing"
-                data-metric2="Rating: 4.2 (dummy)"
-                data-metric3="Terakhir aktif: 7 hari lalu (dummy)"
-              >
-                Detail
+              <button type="button" 
+                      class="btn btn-danger btn-dashboard btn-delete js-user-status"
+                      data-url="{% url 'update_status_user' %}"
+                      data-id="{{ vendor.id_vendor }}"
+                      data-role="Vendor"
+                      data-status="{{ vendor.status }}"
+                      data-is_deleted="{{ vendor.is_deleted }}">
+                {% if vendor.is_deleted %} Pulihkan
+                {% else %} Hapus 
+                {% endif %}
               </button>
-              <button type="button" class="btn btn-success btn-dashboard">Aktifkan</button>
-              <button type="button" class="btn btn-danger btn-dashboard">Hapus</button>
             </td>
           </tr>
-
+          {% endfor %}
         </tbody>
       </table>
     </div>
@@ -395,57 +357,73 @@
           </tr>
         </thead>
         <tbody>
-
+          {% for customer in list_customer %}
           <tr>
-            <td>Jamal</td>
-            <td>jamal@example.com</td>
-            <td>5</td>
-            <td><span class="badge-status badge-published">Aktif</span></td>
+            <td>{{ customer.nama }}</td>
+            <td>{{ customer.email }}</td>
+            <td>{{ customer.jumlah_transaksi }}</td>
+            <td>
+              <span id="badge-customer-{{ customer.idcustomer }}" class="badge-status 
+                      {% if customer.status == 'Aktif' %} badge-published
+                      {% elif customer.status == 'Diblokir' %} badge-unpublished 
+                      {% else %} badge-takedown {% endif %}">
+                {{ customer.status }}
+              </span>
             <td>
               <button
                 type="button"
-                class="btn btn-primary btn-dashboard js-user-detail"
+                class="btn btn-primary btn-dashboard btn-detail js-user-detail"
                 data-toggle="modal"
                 data-target="#modalUserDetail"
                 data-role="Customer"
-                data-name="Jamal"
-                data-email="jamal@example.com"
-                data-status="Aktif"
-                data-metric1="5 transaksi"
+                data-id="{{ customer.idcustomer }}"
+                data-name="{{ customer.nama }}"
+                data-email="{{ customer.email }}"
+                data-status="{{ customer.status }}"
+                data-metric1="{{ customer.jumlah_transaksi }} transaksi"
                 data-metric2="Komplain: 0 (dummy)"
                 data-metric3="Terakhir transaksi: kemarin (dummy)"
               >
                 Detail
               </button>
-              <button type="button" class="btn btn-warning btn-dashboard">Blokir</button>
-            </td>
-          </tr>
+              {% if customer.status == 'Aktif' %}
+                  <button type="button" 
+                          class="btn btn-warning btn-dashboard btn-status js-user-status"
+                          data-url="{% url 'update_status_user' %}"
+                          data-id="{{ customer.idcustomer }}"
+                          data-role="Customer"
+                          data-status="Diblokir"
+                          data-is_deleted="{{ customer.is_deleted }}"
+                          {% if customer.is_deleted %} disabled {% endif %}>
+                      Blokir
+                  </button>
+              {% else %}
+                <button type="button" 
+                        class="btn btn-success btn-dashboard btn-status js-user-status"
+                        data-url="{% url 'update_status_user' %}"
+                        data-id="{{ customer.idcustomer }}"
+                        data-role="Customer"
+                        data-status="Aktif"
+                        data-is_deleted="{{ customer.is_deleted }}"
+                        {% if customer.is_deleted %} disabled {% endif %}>
+                    Buka Blokir
+                </button>
+              {% endif %}
 
-          <tr>
-            <td>Siti</td>
-            <td>siti@example.com</td>
-            <td>2</td>
-            <td><span class="badge-status badge-takedown">Diblokir</span></td>
-            <td>
-              <button
-                type="button"
-                class="btn btn-primary btn-dashboard js-user-detail"
-                data-toggle="modal"
-                data-target="#modalUserDetail"
-                data-role="Customer"
-                data-name="Siti"
-                data-email="siti@example.com"
-                data-status="Diblokir"
-                data-metric1="2 transaksi"
-                data-metric2="Komplain: 1 (dummy)"
-                data-metric3="Terakhir transaksi: 1 bulan lalu (dummy)"
-              >
-                Detail
+              <button type="button" 
+                      class="btn btn-danger btn-dashboard btn-delete js-user-status"
+                      data-url="{% url 'update_status_user' %}"
+                      data-id="{{ customer.idcustomer }}"
+                      data-role="Customer"
+                      data-status="{{ customer.status }}"
+                      data-is_deleted="{{ customer.is_deleted }}">
+                  {% if customer.is_deleted %} Pulihkan
+                  {% else %} Hapus 
+                  {% endif %}
               </button>
-              <button type="button" class="btn btn-success btn-dashboard">Buka Blokir</button>
             </td>
           </tr>
-
+          {% endfor %}
         </tbody>
       </table>
     </div>
@@ -478,28 +456,23 @@
           </tr>
         </thead>
         <tbody>
-
+          {% for transaction in transactions_data %}
           <tr>
-            <td>TRX-2025-001</td>
-            <td>10/12/2025</td>
-            <td>Jamal</td>
-            <td>Asep</td>
-            <td>Fotografi Asep</td>
-            <td>Rp 50.000</td>
-            <td><span class="badge-status badge-published">Selesai</span></td>
-            <td>Order via WA, bukti transfer sudah dicek. (dummy)</td>
+            <td>{{ transaction.no_transaksi }}</td>
+            <td>{{ transaction.tanggal|date:"d/m/Y"}}</td>
+            <td>{{ transaction.customer_id_customer.nama }}</td>
+            <td>{{ transaction.jasa_id_jasa.vendor_id_vendor.nama }}</td>
+            <td>{{ transaction.jasa_id_jasa.name_jasa }}</td>
+            <td>Rp {{ transaction.nominal|intcomma }}</td>
+            <td><span class="badge-status 
+              {% if transaction.payment.status == 'Selesai' %} badge-selesai 
+              {% elif transaction.payment.status == 'Menunggu' %} badge-menunggu 
+              {% else %} badge-dibatalkan {% endif %}">
+                {{ transaction.payment.status }}
+              </span></td>
+            <td>{{ transaction.deskripsi }}</td>
           </tr>
-
-          <tr>
-            <td>TRX-2025-002</td>
-            <td>11/12/2025</td>
-            <td>Siti</td>
-            <td>Bahlil</td>
-            <td>Desain Grafis</td>
-            <td>Rp 50.000</td>
-            <td><span class="badge-status badge-unpublished" style="background:#ffc107;">Menunggu</span></td>
-            <td>Customer sudah chat WA, menunggu pembayaran. (dummy)</td>
-          </tr>
+          {% endfor %}
 
         </tbody>
       </table>
@@ -521,25 +494,29 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      
+      <form action="{% url 'update_listing_jasa' %}" method="POST">
+        {% csrf_token %}
 
-      <div class="modal-body">
-        <div style="margin-bottom:10px;color:#666;">
-          <b>ID:</b> <span id="editListingId">-</span> &nbsp;|&nbsp;
-          <b>Seller:</b> <span id="editListingSeller">-</span>
-        </div>
+        <input type="hidden" id="editListingIdHidden" name="id_jasa">
 
-        <form action="#" method="post">
+        <div class="modal-body">
+          <div style="margin-bottom:10px;color:#666;">
+            <b>ID:</b> <span id="editListingIdText">-</span> &nbsp;|&nbsp;
+            <b>Seller:</b> <span id="editListingSellerText">-</span>
+          </div>
+
           <div class="row">
             <div class="col-md-8 mb-3">
               <label class="form-label">Nama Jasa</label>
-              <input id="editListingName" type="text" class="form-control" placeholder="Nama jasa">
+              <input name="name_jasa" id="editListingName" type="text" class="form-control" placeholder="Nama jasa" required>
             </div>
             <div class="col-md-4 mb-3">
               <label class="form-label">Status</label>
-              <select id="editListingStatus" class="form-control">
-                <option value="published">Published</option>
-                <option value="unpublished">Unpublished</option>
-                <option value="takedown">Taken Down</option>
+              <select name="status" id="editListingStatus" class="form-control" >
+                <option value="Published">Published</option>
+                <option value="Unpublished">Unpublished</option>
+                <option value="Taken Down">Taken Down</option>
               </select>
               <div class="form-help">Status menentukan apakah tampil di katalog atau tidak.</div>
             </div>
@@ -547,37 +524,26 @@
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">Harga (angka)</label>
-              <input id="editListingPrice" type="number" class="form-control" placeholder="contoh: 50000">
+              <label class="form-label">Harga (Rp)</label>
+              <input name="harga" id="editListingPrice" type="number" class="form-control" placeholder="contoh: 50000" required>
             </div>
-            <div class="col-md-6 mb-3">
+            {% comment %} <div class="col-md-6 mb-3">
               <label class="form-label">Stock</label>
               <input id="editListingStock" type="number" class="form-control" placeholder="contoh: 10">
-            </div>
+            </div> {% endcomment %}
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Catatan Admin</label>
-            <textarea id="editListingNote" class="form-control" rows="4" placeholder="Catatan internal admin..."></textarea>
-            <div class="form-help">
-              Misal: alasan unpublish/takedown, hasil pengecekan laporan, dll.
-            </div>
+            <label class="form-label">Deskripsi Jasa</label>
+            <textarea name="deskripsi" id="editListingDeskripsi" class="form-control" rows="4" placeholder="Deskripsi Jasa..."></textarea>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">Aksi cepat</label><br>
-            <button type="button" class="btn btn-success btn-dashboard">Publish</button>
-            <button type="button" class="btn btn-warning btn-dashboard">Unpublish</button>
-            <button type="button" class="btn btn-danger btn-dashboard">Take Down</button>
-            <div class="form-help">Masih dummy. Nanti bisa disambungkan ke backend.</div>
-          </div>
-        </form>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-dashboard" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-primary btn-dashboard">Simpan Perubahan (Dummy)</button>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-dashboard" data-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary btn-dashboard">Simpan Perubahan</button>
+        </div>
+      </form>
 
     </div>
   </div>
@@ -605,7 +571,7 @@
           <span id="tdName">-</span>
         </div>
         <div style="color:#666;margin-top:4px;">
-          ID: <span id="tdId">-</span> | Seller: <span id="tdSeller">-</span>
+          ID: <span id="tdId"></span> | Seller: <span id="tdSeller">-</span>
         </div>
 
         <div class="mt-3">
@@ -616,7 +582,7 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary btn-dashboard" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-danger btn-dashboard">Take Down (Dummy)</button>
+        <button type="button" class="btn btn-danger btn-dashboard confirm-takedown js-jasa-status" data-dismiss="modal" data-status='Taken Down'>Take Down</button>
       </div>
 
     </div>
@@ -694,28 +660,40 @@
 <script>
   // Edit listing
   $(document).on("click", ".js-edit-listing", function () {
+    // 1. Ambil data dari tombol yang diklik
     const id = $(this).data("id");
     const name = $(this).data("name");
     const seller = $(this).data("seller");
     const price = $(this).data("price");
-    const stock = $(this).data("stock");
     const status = $(this).data("status");
-    const note = $(this).data("note");
+    const deskripsi = $(this).data("deskripsi");
+    console.log(id, name, seller, price, status, deskripsi);
 
-    $("#editListingId").text(id || "-");
-    $("#editListingSeller").text(seller || "-");
-    $("#editListingName").val(name || "");
-    $("#editListingPrice").val(price || "");
-    $("#editListingStock").val(stock || "");
-    $("#editListingStatus").val(status || "unpublished");
-    $("#editListingNote").val(note || "");
-  });
+
+    // 2. Masukkan ke Input Form (agar bisa diedit & disubmit)
+    $("#editListingIdHidden").val(id); // Masuk ke input hidden
+    $("#editListingName").val(name);
+    $("#editListingPrice").val(price);
+    $("#editListingStatus").val(status);
+    $("#editListingDeskripsi").val(deskripsi);
+
+    // 3. Masukkan ke Teks Info (hanya baca)
+    $("#editListingIdText").text(id);
+    $("#editListingSellerText").text(seller);
+  });    
 
   // Take down confirm
   $(document).on("click", ".js-takedown", function () {
-    $("#tdId").text($(this).data("id") || "-");
-    $("#tdName").text($(this).data("name") || "-");
-    $("#tdSeller").text($(this).data("seller") || "-");
+    const id = $(this).data("id");
+    const name = $(this).data("name");
+    const seller = $(this).data("seller");
+
+    $("#tdId").text(id || "-");
+    $("#tdName").text(name || "-");
+    $("#tdSeller").text(seller || "-");
+
+    // Update tombol konfirmasi take down dengan data yang sesuai
+    $(".confirm-takedown").data("id", id).data("url", $(this).data("url") );
   });
 
   // User detail
@@ -728,6 +706,175 @@
     $("#udMetric1").text($(this).data("metric1") || "-");
     $("#udMetric2").text($(this).data("metric2") || "-");
     $("#udMetric3").text($(this).data("metric3") || "-");
+  });
+
+
+  // --- 1. CSRF Token Helper ---
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  const csrftoken = getCookie('csrftoken');
+
+  // --- 2. Generic Helper Function (Jantung AJAX) ---
+  function sendStatusUpdate(url, payload, btnElement, onSuccess) {
+      // Efek Loading
+      const originalText = btnElement.text();
+      btnElement.text("Wait...").prop("disabled", true);
+
+      fetch(url, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrftoken
+          },
+          body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Response:", data);
+        if (data.success) {
+            onSuccess(data); // Panggil callback UI khusus
+        } else {
+          alert("Gagal: " + data.message);
+          btnElement.text(originalText);
+        }
+        })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("Terjadi kesalahan koneksi.");
+        btnElement.text(originalText);
+      })
+      .finally(() => {
+        // Restore tombol jika masih ada di DOM dan tidak didisable permanen
+        if (btnElement.length && !btnElement.prop("disabled-permanent")) {
+            btnElement.prop("disabled", false);
+        }
+      });
+  }
+
+  // --- 3. Handler JASA (UI Logic) ---
+  $(document).on("click", ".js-jasa-status", function () {
+      const btn = $(this);
+      const url = btn.data("url");
+      const id = btn.data("id");
+      const targetStatus = btn.data("status");
+      
+      sendStatusUpdate(url, {
+          id: id,
+          status: targetStatus
+      }, btn, function(data) {
+          // Update Badge
+          const badge = $("#badge-jasa-" + id);
+          badge.text(data.new_status);
+          badge.removeClass("badge-published badge-unpublished badge-takedown");
+          
+          if (data.new_status === "Published") {
+              badge.addClass("badge-published");
+          } else if (data.new_status === "Unpublished") {
+              badge.addClass("badge-unpublished");
+          } else if (data.new_status === "Taken Down") {
+              badge.addClass("badge-takedown");
+          }
+
+          // Update Tombol (Swap Warna & Fungsi)
+          if (targetStatus === "Published") {
+              // Sekarang sudah Published, tombol harus jadi "Unpublish" (Kuning)
+              btn.removeClass("btn-success").addClass("btn-warning");
+              btn.text("Unpublish");
+              btn.data("status", "Unpublished"); // Update data-status untuk klik berikutnya
+          } if (targetStatus === "Unpublished") {
+              // Sekarang sudah Unpublished, tombol harus jadi "Publish" (Hijau)
+              btn.removeClass("btn-warning").addClass("btn-success");
+              btn.text("Publish");
+              btn.data("status", "Published");
+              $("#actions-cell-" + id).find(".js-takedown").prop("disabled", false); // Enable tombol Take Down kembali
+          } else if (targetStatus === "Taken Down") {
+              // Tombol Take Down di-disable
+              btn.text("Taken Down");
+              btn.prop("disabled", true);
+              
+              // Juga update tombol menjadi unpublish
+              const actionsCell = $("#actions-cell-" + id);
+              actionsCell.find(".js-takedown").prop("disabled", true);
+              actionsCell.find(".js-jasa-status").removeClass("btn-success btn-warning").addClass("btn-warning").text("Unpublish").data("status", "Unpublished");
+          }
+
+          $(document).find(".js-edit-listing[data-id='" + btn.data("id") + "']").data("status", data.new_status);
+      });
+  });
+
+  // --- 4. Handler USER (UI Logic) ---
+  $(document).on("click", ".js-user-status", function () {
+      const btn = $(this);
+      const url = btn.data("url");
+      const targetStatus = btn.data("status");
+      const isDeleted = btn.data("is_deleted");
+      const userRole = btn.data("role");
+      const is_delete_action = btn.hasClass("btn-delete");
+
+      // Konfirmasi Hapus
+      if (targetStatus === 'Dihapus' && !confirm("Yakin hapus user ini? User tidak akan bisa login lagi.")) {
+          return;
+      }
+      sendStatusUpdate(url, {
+          id: btn.data("id"),
+          status: targetStatus,
+          role: userRole,
+          is_delete_action: is_delete_action
+      }, btn, function(data) {
+        
+        // Update Badge
+        if(userRole === "Vendor") {
+          var badge = $("#badge-vendor-" + btn.data("id"));
+        } else {
+          var badge = $("#badge-customer-" + btn.data("id"));
+        }
+        badge.text(data.new_status); 
+        badge.removeClass("badge-published badge-unpublished badge-takedown");
+        
+        // Update Tombol
+        if (data.is_deleted) {
+          btn.text("Pulihkan").attr("data-is_deleted", true);
+          badge.text("Dihapus").addClass("badge-takedown");
+
+          $(document).find(".btn-status[data-id='" + btn.data("id") + "'][data-role='" + userRole + "']").prop("disabled", true).prop("disabled-permanent", true);
+
+        } else {
+          if (targetStatus === "Diblokir") {
+            // Berubah jadi tombol "Buka Blokir"
+            btn.removeClass("btn-warning").addClass("btn-success")
+            .attr("data-status", "Aktif").text("Buka Blokir").data("status", "Aktif");
+          }
+          else if (targetStatus === "Aktif") {
+            // Berubah jadi tombol "Blokir"
+            btn.removeClass("btn-success").addClass("btn-warning")
+            .attr("data-status", "Diblokir").text("Blokir").data("status", "Diblokir");
+          }
+          
+          if ( is_delete_action ) {
+            btn.text("Hapus").attr("data-is_deleted", false);
+            badge.text(targetStatus);
+            $(document).find(".btn-status[data-id='" + btn.data("id") + "'][data-role='" + userRole + "']").prop("disabled", false).prop("disabled-permanent", false);
+          } 
+          
+          if (data.new_status === "Aktif") badge.addClass("badge-published");
+          else if (data.new_status === "Diblokir") badge.addClass("badge-unpublished");
+          else badge.addClass("badge-takedown");
+        }
+
+        $(document).find(".js-user-detail[data-id='" + btn.data("id") + "'][data-role='" + userRole + "']").data("status", data.new_status);
+      });
   });
 </script>
 

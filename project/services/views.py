@@ -53,7 +53,7 @@ def add_jasa(request):
 
         return redirect("dashboard_seller")
 
-    return render(request, "addproduct.html")
+    return render(request, "add_product.html")
 
 def update_jasa(request, jasa_id):
     vendor_id = request.session.get("user_id")
@@ -75,7 +75,7 @@ def update_jasa(request, jasa_id):
 
         return redirect("dashboard_seller")
 
-    return render(request, "editproduct.html", {
+    return render(request, "edit_product.html", {
         "jasa": jasa
     })
     

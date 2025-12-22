@@ -2181,31 +2181,31 @@ a.video-play-btn {
 }
 
 .team-bg-1 {
-  background-image: url(../img/team/team-1.jpg);
+  background-image: url(../img/team/team-1.png);
 }
 
 .team-bg-2 {
-  background-image: url(../img/team/team-2.jpg);
+  background-image: url(../img/team/team-2.png);
 }
 
 .team-bg-3 {
-  background-image: url(../img/team/team-3.jpg);
+  background-image: url(../img/team/team-3.png);
 }
 
 .team-bg-4 {
-  background-image: url(../img/team/team-4.jpg);
+  background-image: url(../img/team/team-4.png);
 }
 
 .team-bg-5 {
-  background-image: url(../img/team/team-5.jpg);
+  background-image: url(../img/team/team-5.png);
 }
 
 .team-bg {
   height: 400px;
   background-size: cover;
-  background-position: center;
+  background-position: center 20px;
   border-radius: 5px;
-  background-color: #ddd;
+  background-color: #30318b;
 }
 
 .single-team-item {

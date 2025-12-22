@@ -81,10 +81,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USER': 'postgres',
+        'USER': 'postgres.ecdbpgmdqneckxkldxrg',
         'PASSWORD': 'CollegeConnect123',
-        'HOST': 'db.ecdbpgmdqneckxkldxrg.supabase.co',
+        'HOST': 'aws-1-ap-south-1.pooler.supabase.com',
         'PORT': '5432',
+        'POOL_MODE': 'session',
     }
 }
 

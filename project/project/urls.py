@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include
+from . import views as views_home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,6 +14,7 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('dashboard/', include('dashboard.urls')),
     path('transactions/', include('transactions.urls')),
+    path('', views_home.home, name='home'),
 
     # About
     path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
@@ -21,11 +23,41 @@ urlpatterns = [
     path('contact/', TemplateView.as_view(template_name='contact.html'), name='contact'),
 
     # Shop list
-    path('shop/', TemplateView.as_view(template_name='shop.html'), name='shop'),
+    path('', include('services.urls')),
 
-    # Product detail page
-    path('product/', TemplateView.as_view(template_name='productpage.html'), name='product_page'),
 
+    # # Login & Register
+    # path('login/', TemplateView.as_view(template_name='login.html'), name='login'),
+    # path('cstregister/', TemplateView.as_view(template_name='customer_register.html'), name='customer_register'),
+    # path('register/', TemplateView.as_view(template_name='register.html'), name='register'),
+
+    # Dashboard Seller
+    # path('dashboard-seller/', 
+    #      TemplateView.as_view(template_name='dashboardseller.html'), 
+    #      name='dashboard_seller'),
+    path('', include('services.urls')),
+
+
+    # # Add Product
+    # path(
+    #     'dashboard-seller/add-product/',
+    #     TemplateView.as_view(template_name='addproduct.html'),
+    #     name='addproduct'
+    # ),
+
+    # # Edit Product
+    # path(
+    #     'dashboard-seller/edit-product/',
+    #     TemplateView.as_view(template_name='editproduct.html'),
+    #     name='editproduct'
+    # ),
+
+    # Dashboard Admin
+    path('dashboard-admin/', 
+         TemplateView.as_view(template_name='dashboardadmin.html'), 
+         name='dashboard_admin'),
+
+    path('transactions/', include('transactions.urls')),
 
 ]
 

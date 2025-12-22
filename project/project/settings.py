@@ -87,6 +87,7 @@ DATABASES = {
         'PASSWORD': 'CollegeConnect123',
         'HOST': 'aws-1-ap-south-1.pooler.supabase.com',
         'PORT': '5432',
+        'POOL_MODE': 'session',
     }
 }
 

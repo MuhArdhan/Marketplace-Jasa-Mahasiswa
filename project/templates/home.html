@@ -89,51 +89,23 @@
     </div>
 
     <div class="row">
-
+      {% for jasa in jasa_list %}
       <div class="col-lg-4 col-md-6 text-center">
         <div class="single-product-item">
           <div class="product-image">
-            <a href="{% url 'product_page' %}">
-              <img src="{% static 'assets/img/products/fotografi.jpg' %}" alt="">
+            <a href="{% url 'product_page' jasa.id_jasa %}">
+              <img src="{{ jasa.image.url }}" alt="{{ jasa.name_jasa }}">
             </a>
           </div>
-          <h3>Fotografi</h3>
-          <p class="product-price"><span>Jamal</span> Rp. 100.000</p>
-          <a href="{% url 'product_page' %}" class="cart-btn">
+          <h3>{{ jasa.name_jasa }}</h3>
+          <p class="product-price"><span>{{ jasa.vendor_id_vendor }}</span> Rp. {{ jasa.harga }}</p>
+          <a href="{% url 'product_page' jasa.id_jasa %}" class="cart-btn">
             <i class="fas fa-shopping-cart"></i> Temukan
           </a>
         </div>
       </div>
 
-      <div class="col-lg-4 col-md-6 text-center">
-        <div class="single-product-item">
-          <div class="product-image">
-            <a href="{% url 'product_page' %}">
-              <img src="{% static 'assets/img/products/desaingrafis.jpg' %}" alt="">
-            </a>
-          </div>
-          <h3>Desain Grafis</h3>
-          <p class="product-price"><span>Bahlil</span> Rp. 50.000</p>
-          <a href="{% url 'product_page' %}" class="cart-btn">
-            <i class="fas fa-shopping-cart"></i> Temukan
-          </a>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6 offset-md-3 offset-lg-0 text-center">
-        <div class="single-product-item">
-          <div class="product-image">
-            <a href="{% url 'product_page' %}">
-              <img src="{% static 'assets/img/products/psikolog.jpg' %}" alt="">
-            </a>
-          </div>
-          <h3>Psikolog</h3>
-          <p class="product-price"><span>Asep</span> Rp. 75.000</p>
-          <a href="{% url 'product_page' %}" class="cart-btn">
-            <i class="fas fa-shopping-cart"></i> Temukan
-          </a>
-        </div>
-      </div>
+      {% endfor %}
 
     </div>
 
